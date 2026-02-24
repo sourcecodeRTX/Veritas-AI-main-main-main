@@ -353,7 +353,7 @@ async function getGeminiURLAnalysis(url: string, localFindings: URLCheckResult):
     try {
       const result = await Promise.race([
         generateObject({
-          model: google("gemini-2.0-flash-lite"),
+          model: google("gemini-2.5-flash-lite"),
           schema: AnalysisSchema,
           prompt: `You are an ELITE CYBERSECURITY ANALYST specializing in URL threat analysis.
 Your verdict will be shown to users who need to decide if this link is safe to click.
@@ -609,3 +609,4 @@ export async function POST(request: NextRequest) {
 }
 
 export const maxDuration = 30
+
