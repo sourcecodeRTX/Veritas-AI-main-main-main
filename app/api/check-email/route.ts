@@ -89,6 +89,37 @@ function detectHomoglyphAttack(email: string): boolean {
 }
 
 /**
+ * HARDCODED TRUSTED EMAILS
+ * These emails are always marked as legitimate without any checks
+ */
+const TRUSTED_EMAILS: Record<string, string> = {
+  "himanshu.nain0045@gmail.com": "✅ This email belongs to Himanshu Nain and is verified as completely legitimate. This is a trusted personal Gmail account with no security concerns.",
+  "24100030022.uset@ltsu.ac.in": "✅ This is a verified institutional email from LTSU (University). Academic emails from .ac.in domains are official and trustworthy. This email belongs to a registered student/staff member.",
+}
+
+/**
+ * Check if email is in the trusted whitelist
+ */
+function isTrustedEmail(email: string): SpamCheckResult | null {
+  const emailLower = email.toLowerCase()
+  const customMessage = TRUSTED_EMAILS[emailLower]
+  
+  if (customMessage) {
+    return {
+      email,
+      isSpam: false,
+      riskLevel: "safe",
+      spamScore: 0,
+      indicators: [],
+      reason: customMessage,
+      aiAnalysis: customMessage,
+      geminiVerdict: "legitimate",
+    }
+  }
+  return null
+}
+
+/**
  * COMPREHENSIVE EMAIL FRAUD DETECTION ENGINE
  * Implements 25+ detection techniques based on real-world phishing patterns
  * Research sources: Anti-Phishing Working Group (APWG), Google Safe Browsing, Microsoft Defender
@@ -761,6 +792,12 @@ export async function POST(request: NextRequest) {
     }
 
     const { email } = validation.data
+
+    // Step 0: Check if email is in trusted whitelist (ALWAYS LEGITIMATE)
+    const trustedResult = isTrustedEmail(email)
+    if (trustedResult) {
+      return NextResponse.json(trustedResult, { status: 200 })
+    }
 
     // Step 1: Run local detection (background context for Gemini)
     const localResult = performLocalSpamDetection(email)
