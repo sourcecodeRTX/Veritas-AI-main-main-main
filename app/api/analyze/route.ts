@@ -305,7 +305,7 @@ For each claim analysis:
 Provide specific, actionable reasoning for your assessment. Include relevant source URLs that support your analysis.`
 
     // Use stable Gemini 2.0 Flash (better free tier limits)
-    const googleClient = google("gemini-2.0-flash")
+    const googleClient = google("gemini-2.5-flash")
 
     // Try to generate structured analysis using Gemini
     let result
